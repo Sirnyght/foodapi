@@ -1,0 +1,42 @@
+{
+  "name": "foodapi",
+  "version": "1.0.0",
+  "description": "A little web service to access a recipe and its ingredients",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "setup": "node src/database/setup.js",
+    "start": "nodemon index",
+    "test": "mocha --require @babel/polyfill --require @babel/register",
+    "test:watch": "npm run test -- --parallel --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@etulab.univ-amu.fr:h21228183/foodapi.git"
+  },
+  "keywords": [
+    "cooking",
+    "recipe",
+    "ingredients",
+    "alcohol",
+    "food",
+    "api",
+    "webservice"
+  ],
+  "author": "Dimitri",
+  "license": "ISC",
+  "dependencies": {
+    "sqlite": "^5.0.1",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.4",
+    "@babel/core": "^7.23.5",
+    "@babel/preset-env": "^7.23.5",
+    "@babel/register": "^7.22.15",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.2",
+    "regenerator-runtime": "^0.14.0"
+  }
+}

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <style>
+    /* body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    form {
+      width: 300px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    } */
+  </style>
+</head>
+<body>
+  <form id="loginForm">
+		<label for="username">Username:</label>
+		<input type="text" id="username" name="username" required>
+
+		<label for="password">Password:</label>
+		<input type="password" id="password" name="password" required>
+
+		<button type="button" onclick="login()">Login</button>
+		<button type="button" onclick="protectedResource()">Get Protected Resource</button>
+		<button type="button" onclick="logout()">Logout</button>
+  </form>
+  <button type="button" onclick="listUsers()">List Users</button>
+
+  <script>
+    const login = () => {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+  
+      fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        const { accessToken, refreshToken } = data;
+  
+        // Store tokens in localStorage or session storage
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+      })
+      .catch(error => console.error('Error:', error));
+    };
+
+	const logout = () => {
+		const refreshToken = localStorage.getItem('refreshToken');
+		console.log(refreshToken);
+		localStorage.removeItem('accessToken');
+		localStorage.removeItem('refreshToken');
+		
+		fetch('/logout', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ refreshToken }),
+		})		
+		.then(response => response.json())
+		.then(data => {
+			console.log(data);
+		})
+		.catch(error => console.error('Error:', error));
+	};
+
+    async function protectedResource() {
+			let accessToken = localStorage.getItem('accessToken');
+			
+			// If token exists, check if it's expired
+			if (accessToken) {
+				console.log('Access token exists');
+				console.log(isExpired());
+				if (isExpired()) {
+					// If expired, get a new token
+					await refreshToken();
+				} 
+			}
+
+			// After getting a new token, make the API call and get sure that the token has been updated
+			if (accessToken === localStorage.getItem('accessToken')) {
+				console.log('Access token has not been updated');
+				console.log('Access token: ', accessToken);
+				console.log('Access token: ', localStorage.getItem('accessToken'));
+			} else {
+				console.log('Access token has been updated');
+			}
+
+			fetch('protected', {
+				headers: {
+					'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+				}
+			})
+			.then(response => response.json())
+			.then(data => console.log(data))
+			.catch(error => console.error('Error:', error))		
+	};
+
+	async function listUsers() {
+		let accessToken = localStorage.getItem('accessToken');
+			
+			// If token exists, check if it's expired
+			if (accessToken) {
+				console.log('Access token exists');
+				console.log(isExpired());
+				if (isExpired()) {
+					// If expired, get a new token
+					await refreshToken();
+				} 
+			}
+
+			// After getting a new token, make the API call and get sure that the token has been updated
+			if (accessToken === localStorage.getItem('accessToken')) {
+				console.log('Access token has not been updated');
+				console.log('Access token: ', accessToken);
+				console.log('Access token: ', localStorage.getItem('accessToken'));
+			} else {
+				console.log('Access token has been updated');
+			}
+
+		fetch('/users',
+		{
+			headers: {
+				'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+			}
+		})
+		.then(response => response.json())
+		.then(data => console.log(data))
+		.catch(error => console.error('Error:', error));
+		window.location.href = '/users';
+		// Redirect to /users
+	};
+
+	const isExpired = () => {
+		const accessToken = localStorage.getItem('accessToken');
+		const decodedToken = decodeToken(accessToken);
+		const currentTime = Math.floor(Date.now() / 1000);
+
+		return decodedToken.exp < currentTime;
+	};
+
+	const decodeToken = (token) => {
+		const base64Url = token.split('.')[1];
+		const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+		const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+			return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+		}).join(''));
+
+		return JSON.parse(jsonPayload);
+	};
+
+	async function refreshToken() {
+		const refreshToken = localStorage.getItem('refreshToken');
+
+		await fetch('/refresh', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ refreshToken }),
+		})
+		.then(response => response.json())
+		.then(data => {
+			const { accessToken } = data;
+
+			// Update the access token in localStorage
+			localStorage.setItem('accessToken', accessToken);
+		})
+		.catch(error => console.error('Error:', error));
+	};
+
+  </script>
+  
+</body>
+</html>

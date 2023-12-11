@@ -42,6 +42,6 @@ export default class RecipeDAO {
       driver: sqlite3.Database
     })
     const recipe = await db.get(`SELECT * FROM Recipe WHERE id_recipe = ?`, [id]);
-    return new Recipe(recipe.id, recipe.name, recipe.type);
+    return new Recipe(recipe.id_recipe, recipe.name, recipe.type);
   }
 }

@@ -1,9 +1,9 @@
 export default class Ingredient {
     constructor(id, name, type, quantity) {
-        this.id = id
-        this.name = name
-        this.type = type
-        this.quantity = quantity
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.quantity = quantity;
     }
 
     // Getters

@@ -1,8 +1,8 @@
 export default class Recipe {
     constructor(id, name, type, ingredients) {
-        this.id = id
-        this.name = name
-        this.type = type
+        this.id = id;
+        this.name = name;
+        this.type = type;
         this.ingredients = ingredients;
     }
 

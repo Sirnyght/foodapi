@@ -2,42 +2,40 @@ import IngredientDAO from '../DAOs/ingredientDAO.js';
 import RecipeIngredientDAO from '../DAOs/recipeIngredientDAO.js';
 
 export default class IngredientRepository {
+  constructor() {
+    this.ingredientDAO = new IngredientDAO();
+    this.recipeIngredientDAO = new RecipeIngredientDAO();
+  }
+
   async insert(ingredient) {
-    const ingredientDAO = new IngredientDAO();
-    await ingredientDAO.insert(ingredient);
+    await this.ingredientDAO.insert(ingredient);
   }
 
   async update(ingredient) {
-    const ingredientDAO = new IngredientDAO();
-    await ingredientDAO.update(ingredient);
+    await this.ingredientDAO.update(ingredient);
   }
 
   async delete(ingredient) {
-    const ingredientDAO = new IngredientDAO();
-    await ingredientDAO.delete(ingredient);
+    await this.ingredientDAO.delete(ingredient);
   }
 
   async findAll() {
-    const ingredientDAO = new IngredientDAO();
-    const ingredients = await ingredientDAO.findAll();
+    const ingredients = await this.ingredientDAO.findAll();
     return ingredients;
   }
 
   async findById(id) {
-    const ingredientDAO = new IngredientDAO();
-    const ingredient = await ingredientDAO.findById(id);
+    const ingredient = await this.ingredientDAO.findById(id);
     return ingredient;
   }
 
   async findByRecipe(id_recipe) {
-    const ingredientDAO = new IngredientDAO();
-    const recipeIngredientDAO = new RecipeIngredientDAO();
-    const recipeIngredients = await recipeIngredientDAO.findByRecipe(id_recipe);
+    const recipeIngredients = await this.recipeIngredientDAO.findByRecipe(id_recipe);
     const ingredients = [];
     for (const recipeIngredient of recipeIngredients) {
-      const ingredient = await ingredientDAO.findById(recipeIngredient.id_ingredient);
+      const ingredient = await this.ingredientDAO.findById(recipeIngredient.id_ingredient);
       ingredients.push(ingredient);
     }
-    return ingredients;
+    return ingredients; 
   }
 }

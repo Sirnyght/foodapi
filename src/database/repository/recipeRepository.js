@@ -18,7 +18,6 @@ export default class RecipeRepository {
     }
   }
   
-
   async update(recipe) {
     await this.recipeDAO.update(recipe);
 

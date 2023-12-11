@@ -54,7 +54,6 @@ export default class UserRepository {
 
   async findById(id) {
     const user = await this.userDAO.findById(id);
-
     const userRoles = await this.userRoleDAO.findByIdUser(user.getId());
     const roles = [];
     for (const userRole of userRoles) {

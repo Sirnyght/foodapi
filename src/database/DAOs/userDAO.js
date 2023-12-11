@@ -44,6 +44,6 @@ export default class UserDAO {
 			driver: sqlite3.Database
 		})
 		const user = await db.get(`SELECT * FROM User WHERE id_user = ?`, [id]);
-		return new User(user.id_user, user.id_role, user.username, user.password);
+		return new User(user.id_user, user.username, user.password);
 	}
 }

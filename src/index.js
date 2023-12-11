@@ -1,69 +1,107 @@
-// Import SQLite
-import sqlite3 from 'sqlite3'
-import { open } from 'sqlite'
-
-// Import express
-import express from 'express'
-
-// Import object models
-import Recipe from './models/recipe.js'
-import Ingredient from './models/ingredient.js'
-
-// Import repositories
-import RecipeRepository from './database/repository/recipeRepository.js'
-import IngredientRepository from './database/repository/ingredientRepository.js'
-
-// Use the database
-const RR = new RecipeRepository();
-const recipes = await RR.findAll();
-console.log(recipes); 
+import express from 'express';
+import { login, logout, authenticateToken, refreshToken } from './utils/auth.js';
+import { protectedRoute, usersRoute } from './utils/routes.js';
 
 const app = express();
-const port = 3000;
+const PORT = 3000;
+
+app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+  // Send index.html file
+  res.sendFile('index.html', { root: './src/' });
 });
 
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-});
+// Authentication routes
+{
+  // Login route
+  app.post('/login', login);
+  // Logout route
+  app.post('/logout', logout);
+  // Refresh token route
+  app.post('/refresh', refreshToken);
+}
 
-app.get('/recipes', async (req, res) => {
-    const recipes = await RR.findAll();
-    res.send(recipes);
-});
+// Protected route (test purpose)
+app.get('/protected', authenticateToken, protectedRoute); 
 
-app.get('/recipes/:id', async (req, res) => {
-    const recipes = await RR.findById(req.params.id);
-    res.send(recipes);
-});
+// Users route (check all users, add a user, delete a user, update a user, check user by id)
+{
+  // Users route (protected, needs to be authenticated)
+  app.get('/users', authenticateToken, usersRoute);
+  // Authenticated user route (protected, needs to be authenticated)
+  app.get('/users/me', authenticateToken, (req, res) => {
+    res.json(req.user);
+  });
+  // User by id route (protected, needs to be authenticated)
+  app.get('/users/:id', authenticateToken, (req, res) => {
+    res.json(req.user);
+  });
+  // Modify user route (protected, needs to be authenticated)
+  // We use PATCH instead of PUT because we only want to update the fields that are provided
+  app.patch('/users/:id', authenticateToken, (req, res) => {
+    res.json(req.user);
+  });
+  // Delete user route (protected, needs to be authenticated)
+  app.delete('/users/:id', authenticateToken, (req, res) => {
+    res.json(req.user);
+  });
+}
 
-app.get('/ingredients', async (req, res) => {
-    const IR = new IngredientRepository();
-    const ingredients = await IR.findAll();
-    res.send(ingredients);
-});
+// Recipes routes (check all recipes, add a recipe, delete a recipe, update a recipe, check recipe by id)
+{
+  // Recipes route (unprotected, everyone can access the recipes)
+  app.get('/recipes', (req, res) => {
+    res.json(req.user);
+  });
+  // Recipe by id route (unprotected, everyone can access the recipes)
+  app.get('/recipes/:id', (req, res) => {
+    res.json(req.user);
+  });
+  // Add recipe route (protected, needs to be authenticated)
+  app.post('/recipes', authenticateToken, (req, res) => {
+    res.json(req.user);
+  });
+  // Modify recipe route (protected, needs to be authenticated)
+  // We use PATCH instead of PUT because we only want to update the fields that are provided
+  app.patch('/recipes/:id', authenticateToken, (req, res) => {
+    res.json(req.user);
+  });
+  // Delete recipe route (protected, needs to be authenticated)
+  app.delete('/recipes/:id', authenticateToken, (req, res) => {
+    res.json(req.user);
+  });
+}
 
-app.get('/ingredients/:id', async (req, res) => {
-    const IR = new IngredientRepository();
-    const ingredients = await IR.findById(req.params.id);
-    res.send(ingredients);
-});
+// Ingredients routes
+{
+  // Ingredients route (unprotected, everyone can access the ingredients)
+  app.get('/ingredients', (req, res) => {
+    res.json(req.user);
+  });
+  // Ingredient by id route (unprotected, everyone can access the ingredients)
+  app.get('/ingredients/:id', (req, res) => {
+    res.json(req.user);
+  });
+  // Ingredients by recipe id route (unprotected, everyone can access the ingredients)
+  app.get('/recipes/:id/ingredients', (req, res) => {
+    res.json(req.user);
+  });
+  // Add ingredient route (protected, needs to be authenticated)
+  app.post('/ingredients', authenticateToken, (req, res) => {
+    res.json(req.user);
+  });
+  // Modify ingredient route (protected, needs to be authenticated)
+  // We use PATCH instead of PUT because we only want to update the fields that are provided
+  app.patch('/ingredients/:id', authenticateToken, (req, res) => {
+    res.json(req.user);
+  });
+  // Delete ingredient route (protected, needs to be authenticated)
+  app.delete('/ingredients/:id', authenticateToken, (req, res) => {
+    res.json(req.user);
+  });
+}
 
-app.get('/recipes/:id/ingredients', async (req, res) => {
-    const IR = new IngredientRepository();
-    const ingredients = await IR.findByRecipe(req.params.id);
-    res.send(ingredients);
-});
-
-app.get('/ingredients/:id/recipes', async (req, res) => {
-    const IR = new IngredientRepository();
-    const recipes = await IR.findRecipesByIngredient(req.params.id);
-    res.send(recipes);
-});
-
-
-
-
-
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+}); 

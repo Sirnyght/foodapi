@@ -1,6 +1,6 @@
 [![en](https://img.shields.io/badge/lang-en-green.svg)](https://etulab.univ-amu.fr/h21228183/connect-4/-/blob/main/README.md)
 
-# Connect-4
+# FoodAPI
 ## Table des matières
 * [Infos générales](#infos-générales)
 * [Description](#description)

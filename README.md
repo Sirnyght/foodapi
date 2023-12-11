@@ -1,6 +1,6 @@
 [![fr](https://img.shields.io/badge/lang-fr--fr-blue.svg)](./README.fr-FR.md)   
 
-# Connect-4
+# FoodAPI
 ## Table of contents
 * [General info](#general-info)
 * [Description](#description)

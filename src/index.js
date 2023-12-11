@@ -1,6 +1,6 @@
 import express from 'express';
 import { login, logout, authenticateToken, refreshToken } from './utils/auth.js';
-import { protectedRoute, usersRoute } from './utils/routes.js';
+import { protectedRoute, usersRoute, authenticatedUserRoute } from './utils/routes.js';
 
 const app = express();
 const PORT = 3000;
@@ -30,9 +30,7 @@ app.get('/protected', authenticateToken, protectedRoute);
   // Users route (protected, needs to be authenticated)
   app.get('/users', authenticateToken, usersRoute);
   // Authenticated user route (protected, needs to be authenticated)
-  app.get('/users/me', authenticateToken, (req, res) => {
-    res.json(req.user);
-  });
+  app.get('/users/me', authenticateToken, authenticatedUserRoute);
   // User by id route (protected, needs to be authenticated)
   app.get('/users/:id', authenticateToken, (req, res) => {
     res.json(req.user);

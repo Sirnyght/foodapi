@@ -56,6 +56,7 @@
 		<button type="button" onclick="logout()">Logout</button>
   </form>
   <button type="button" onclick="listUsers()">List Users</button>
+	<button type="button" onclick="usersMe()">My Profile</button>
 
   <script>
     const login = () => {
@@ -163,7 +164,42 @@
 		.then(response => response.json())
 		.then(data => console.log(data))
 		.catch(error => console.error('Error:', error));
-		window.location.href = '/users';
+		// window.location.href = '/users';
+		// Redirect to /users
+	};
+
+	async function usersMe() {
+		let accessToken = localStorage.getItem('accessToken');
+			
+			// If token exists, check if it's expired
+			if (accessToken) {
+				console.log('Access token exists');
+				console.log(isExpired());
+				if (isExpired()) {
+					// If expired, get a new token
+					await refreshToken();
+				} 
+			}
+
+			// After getting a new token, make the API call and get sure that the token has been updated
+			if (accessToken === localStorage.getItem('accessToken')) {
+				console.log('Access token has not been updated');
+				console.log('Access token: ', accessToken);
+				console.log('Access token: ', localStorage.getItem('accessToken'));
+			} else {
+				console.log('Access token has been updated');
+			}
+
+		fetch('/users/me',
+		{
+			headers: {
+				'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+			}
+		})
+		.then(response => response.json())
+		.then(data => console.log(data))
+		.catch(error => console.error('Error:', error));
+		// window.location.href = '/myProfile';
 		// Redirect to /users
 	};
 

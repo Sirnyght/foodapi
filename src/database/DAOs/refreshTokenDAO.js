@@ -69,7 +69,6 @@ export default class RefreshTokenDAO {
 			filename: 'database.db',
 			driver: sqlite3.Database
 		})
-		console.log(token);
 		await db.run(`DELETE FROM RefreshToken WHERE token = ?`, [token]);
 	}
 }

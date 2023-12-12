@@ -25,20 +25,20 @@ Its goal is to write a REST API in Javascript using NodeJS and Express.
 | `POST /register`        | Registers a new user. (TODO: Implementation is pending)                                                                                                   |
 | `POST /refresh`         | Refreshes the user's access token.                                                                                                                       |
 | **Protected Route**      |
-| `GET /protected`        | Requires authentication using the `authenticateToken` middleware and then accesses the `protectedRoute`.                                                 |
+| `GET /protected`        | Requires authentication using the `authenticateToken` middleware and then accesses the `protectedRoute`. Needs admin authentication.                                                |
 | **Users Endpoints**      |
-| `GET /users`            | Retrieves a list of all users (protected, requires authentication).                                                                                       |
-| `GET /users/me`         | Retrieves information about the authenticated user (protected, requires authentication).                                                                 |
-| `GET /users/:id`        | Retrieves information about a user by their ID (protected, requires authentication).                                                                     |
+| `GET /users`            | Retrieves a list of all users (protected, requires any authentication).                                                                                       |
+| `GET /users/me`         | Retrieves information about the authenticated user (protected, requires any authentication).                                                                 |
+| `GET /users/:id`        | Retrieves information about a user by their ID (protected, requires any authentication).                                                                     |
 | `POST /users/add`       | Adds a new user (protected, requires authentication, only accessible to admin users).                                                                    |
-| `PATCH /users/:id`      | Modifies a user's information (protected, requires authentication).                                                                                        |
-| `DELETE /users/:id`     | Deletes a user (protected, requires authentication).                                                                                                      |
+| `PATCH /users/:id`      | Modifies a user's information (protected, requires admin authentication).                                                                                        |
+| `DELETE /users/:id`     | Deletes a user (protected, requires admin authentication).                                                                                                      |
 | **Recipes Endpoints**    |
 | `GET /recipes`          | Retrieves a list of all recipes (unprotected, accessible to everyone).                                                                                     |
 | `GET /recipes/:id`      | Retrieves information about a recipe by its ID (unprotected, accessible to everyone).                                                                     |
-| `POST /recipes/add`     | Adds a new recipe (protected, requires authentication).                                                                                                   |
-| `PATCH /recipes/:id`    | Modifies a recipe's information (protected, requires authentication).                                                                                     |
-| `DELETE /recipes/:id`   | Deletes a recipe (protected, requires authentication).                                                                                                    |
+| `POST /recipes/add`     | Adds a new recipe (protected, requires at least user authentication).                                                                                                   |
+| `PATCH /recipes/:id`    | Modifies a recipe's information (protected, requires at least user authentication).                                                                                     |
+| `DELETE /recipes/:id`   | Deletes a recipe (protected, requires admin authentication).                                                                                                    |
 | **Ingredients Endpoints** |
 | `GET /ingredients`      | Retrieves a list of all ingredients (unprotected, accessible to everyone).                                                                                 |
 | `GET /ingredients/:id`  | Retrieves information about an ingredient by its ID (unprotected, accessible to everyone).                                                               |

@@ -1,6 +1,5 @@
 import sqlite3 from 'sqlite3'
 import { open } from 'sqlite'
-
 export default class RefreshTokenDAO {
 	async insert(refreshToken) {
 		const db = await open({

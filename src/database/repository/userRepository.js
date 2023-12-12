@@ -12,9 +12,12 @@ export default class UserRepository {
 
   async insert(user) {
     await this.userDAO.insert(user);
+    // get id of newly inserted user
+    const users = await this.userDAO.findAll();
+    const id = users[users.length - 1].getId();
+    user.setId(id);
 
     for (const role of user.getRoles()) {
-      await this.roleDAO.insert(role);
       await this.userRoleDAO.insert(user.getId(), role.getId());
     }
   }
@@ -22,18 +25,34 @@ export default class UserRepository {
   async update(user) {
     await this.userDAO.update(user);
 
-    for (const role of user.getRoles()) {
-      await this.roleDAO.update(role);
-      await this.userRoleDAO.update(user.getId(), role.getId());
-    }
+      // Check if we are adding or removing a role from the user. 
+      // If the new user has a role that the old user didn't have, add it to the database.
+      // If the old user had a role that the new user doesn't have, remove it from the database.
+      // If the user has the same roles as before, do nothing.
+      const oldUserRoles = await this.userRoleDAO.findByIdUser(user.getId());
+      console.log(oldUserRoles);
+
+      for (const oldUserRole of oldUserRoles) {
+        if (!user.getRoles().includes(oldUserRole.id_role)) {
+          await this.userRoleDAO.delete(user.getId(), oldUserRole.id_role);
+        }
+      }
+
+      for (const role of user.getRoles()) {
+        if (!oldUserRoles.includes(role.getId())) {
+          await this.userRoleDAO.insert(user.getId(), role.getId());
+        }
+      }
   }
 
   async delete(user) {
     await this.userDAO.delete(user);
 
-    for (const role of user.getRoles()) {
-      await this.roleDAO.delete(role);
-      await this.userRoleDAO.delete(user.getId(), role.getId());
+    // get all roles of user
+    const userRoles = await this.userRoleDAO.findByIdUser(user.getId());
+    for (const userRole of userRoles) {
+      // delete userRole from database
+      await this.userRoleDAO.delete(userRole.id_user, userRole.id_role);
     }
   }
 

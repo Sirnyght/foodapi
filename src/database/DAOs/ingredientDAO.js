@@ -8,7 +8,7 @@ export default class IngredientDAO {
       filename: 'database.db',
       driver: sqlite3.Database
     })
-    await db.run(`INSERT INTO Ingredient (name, type) VALUES (?, ?, ?)`, [ingredient.getName(), ingredient.getType()]);
+    await db.run(`INSERT INTO Ingredient (name, type) VALUES (?, ?)`, [ingredient.getName(), ingredient.getType()]);
   }
 
   async update(ingredient) {

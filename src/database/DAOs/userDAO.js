@@ -8,7 +8,7 @@ export default class UserDAO {
 			filename: 'database.db',
 			driver: sqlite3.Database
 		})
-		await db.run(`INSERT INTO User (id_role, username, password) VALUES (?, ?, ?)`, [user.getIdRole(), user.getUsername(), user.getPassword()]);
+		await db.run(`INSERT INTO User (id_user, username, password) VALUES (?, ?, ?)`, [user.getId(), user.getUsername(), user.getPassword()]);
 	}
 	
 	async update(user) {
@@ -16,7 +16,7 @@ export default class UserDAO {
 			filename: 'database.db',
 			driver: sqlite3.Database
 		})
-		await db.run(`UPDATE User SET id_role = ?, username = ?, password = ? WHERE id_user = ?`, [user.getIdRole(), user.getUsername(), user.getPassword(), user.getId()]);
+		await db.run(`UPDATE User SET id_user = ?, username = ?, password = ? WHERE id_user = ?`, [user.getId(), user.getUsername(), user.getPassword(), user.getId()]);
 	}
 	
 	async delete(user) {

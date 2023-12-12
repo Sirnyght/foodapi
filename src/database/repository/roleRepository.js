@@ -29,9 +29,16 @@ export default class RoleRepository {
     return role;
   }
 
-  async findByName(name) {
-    const role = await this.roleDAO.findByName(name);
-    return role;
+  // Method added to follow business logic
+  async findByNames(names) {
+    const roles = await this.roleDAO.findAll();
+    const rolesToReturn = [];
+    for (const role of roles) {
+      if (names.includes(role.name)) {
+        rolesToReturn.push(role);
+      }
+    }
+    return rolesToReturn;
   }
 
   async findByUser(id_user) {

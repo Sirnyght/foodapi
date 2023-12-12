@@ -1,247 +1,708 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Page</title>
-  <style>
-    /* body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    form {
-      width: 300px;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 16px;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    } */
-  </style>
-</head>
-<body>
-  <form id="loginForm">
-		<label for="username">Username:</label>
-		<input type="text" id="username" name="username" required>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Login Page</title>
+		<style>
+			/* body {
+				font-family: Arial, sans-serif;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-direction: column;
+				height: 100vh;
+				margin: 0;
+			}
+			form {
+				width: 300px;
+				padding: 20px;
+				border: 1px solid #ccc;
+				border-radius: 5px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			}
+			label {
+				display: block;
+				margin-bottom: 8px;
+			}
+			input {
+				width: 100%;
+				padding: 8px;
+				margin-bottom: 16px;
+				box-sizing: border-box;
+			}
+			button {
+				background-color: #4CAF50;
+				color: white;
+				padding: 10px 15px;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+			}
+			button:hover {
+				background-color: #45a049;
+			} */
+		</style>
+	</head>
+	<body>
+		<form id="loginForm">
+			<label for="username">Username:</label>
+			<input type="text" id="loginUsername" name="username" required>
 
-		<label for="password">Password:</label>
-		<input type="password" id="password" name="password" required>
+			<label for="password">Password:</label>
+			<input type="password" id="loginPassword" name="password" required>
 
-		<button type="button" onclick="login()">Login</button>
-		<button type="button" onclick="protectedResource()">Get Protected Resource</button>
-		<button type="button" onclick="logout()">Logout</button>
-  </form>
-  <button type="button" onclick="listUsers()">List Users</button>
-	<button type="button" onclick="usersMe()">My Profile</button>
+			<button type="button" onclick="login()">Login</button>
+			<button type="button" onclick="protectedResource()">Get Protected Resource (Test)</button>
+			<button type="button" onclick="logout()">Logout</button>
+		</form>
 
-  <script>
-    const login = () => {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-  
-      fetch('/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      })
-      .then(response => response.json())
-      .then(data => {
-        const { accessToken, refreshToken } = data;
-  
-        // Store tokens in localStorage or session storage
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
-      })
-      .catch(error => console.error('Error:', error));
-    };
-
-	const logout = () => {
-		const refreshToken = localStorage.getItem('refreshToken');
-		console.log(refreshToken);
-		localStorage.removeItem('accessToken');
-		localStorage.removeItem('refreshToken');
+		<button type="button" onclick="listUsers()">List Users</button>
+		<button type="button" onclick="usersMe()">My Profile</button>
 		
-		fetch('/logout', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ refreshToken }),
-		})		
-		.then(response => response.json())
-		.then(data => {
-			console.log(data);
-		})
-		.catch(error => console.error('Error:', error));
-	};
+		<form id="usersID">
+			<label for="ID">User ID:</label>
+			<input type="text" id="getUserID" name="ID" required>
+			<button type="button" onclick="usersID()">User Profile by ID</button>
+		</form>
 
-    async function protectedResource() {
-			let accessToken = localStorage.getItem('accessToken');
-			
-			// If token exists, check if it's expired
-			if (accessToken) {
-				console.log('Access token exists');
-				console.log(isExpired());
-				if (isExpired()) {
-					// If expired, get a new token
-					await refreshToken();
-				} 
-			}
+		<form id="addUser">
+			<label for="username">Username:</label>
+			<input type="text" id="addUserUsername" name="username" required>
 
-			// After getting a new token, make the API call and get sure that the token has been updated
-			if (accessToken === localStorage.getItem('accessToken')) {
-				console.log('Access token has not been updated');
-				console.log('Access token: ', accessToken);
-				console.log('Access token: ', localStorage.getItem('accessToken'));
-			} else {
-				console.log('Access token has been updated');
-			}
+			<label for="password">Password:</label>
+			<input type="password" id="addUserPassword" name="password" required>
 
-			fetch('protected', {
-				headers: {
-					'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+			<!-- Roles should allow selection of multiple roles (admin, user) -->
+			<label for="roles">Roles:</label>
+			<select id="addUserRoles" name="roles" multiple required>
+				<option value="admin">Admin</option>
+				<option value="user">User</option>
+			</select>
+
+			<button type="button" onclick="addUser()">Add User</button>
+		</form>
+
+		<form id="updateUser">
+			<label for="ID">User ID:</label>
+			<input type="text" id="updateUserID" name="ID" required>
+			<!-- others params -->
+			<label for="username">Username:</label>
+			<input type="text" id="updateUserUsername" name="username" required>
+
+			<label for="password">Password:</label>
+			<input type="password" id="updateUserPassword" name="password" required>
+
+			<!-- Roles should allow selection of multiple roles (admin, user) -->
+			<label for="roles">Roles:</label>
+			<select id="updateUserRoles" name="roles" multiple required>
+				<option value="admin">Admin</option>
+				<option value="user">User</option>
+			</select>
+			<button type="button" onclick="updateUser()">Update User</button>
+		</form>
+
+		<form id="deleteUser">
+			<label for="ID">User ID:</label>
+			<input type="text" id="deleteUserID" name="ID" required>
+			<button type="button" onclick="deleteUser()">Delete User</button>
+		</form>
+
+		<div id="recipes" class="section">
+			<button type="button" onclick="listRecipes()">List Recipes</button>
+			<form id="recipesID">
+				<label for="ID">Recipe ID:</label>
+				<input type="text" id="getRecipeID" name="ID" required>
+				<button type="button" onclick="recipeID()">Recipe by ID</button>
+			</form>
+			<form id="addRecipe">
+				<label for="name">Name:</label>
+				<input type="text" id="addRecipeName" name="name" required>
+
+				<label for="type">Type:</label>
+				<input type="text" id="addRecipeType" name="type" required>
+
+				<label for="ingredients">Ingredients:</label>
+				<!-- textbox -->
+				<!-- Warn the user that ingredients must be on the following format and separated by a comma : -->
+				<!-- name - type - quantity -->
+				<span>Ingredients must be on the following format and separated by a comma :</span>
+				<span>name - type - quantity</span>
+				<input type="text" id="addRecipeIngredients" name="ingredients" required>
+
+
+				<button type="button" onclick="addRecipe()">Add Recipe</button>
+			</form>
+
+			<form id="updateRecipe">
+				<label for="ID">Recipe ID:</label>
+				<input type="text" id="updateRecipeID" name="ID" required>
+				<!-- others params -->
+				<label for="name">Name:</label>
+				<input type="text" id="updateRecipeName" name="name" required>
+
+				<label for="type">Type:</label>
+				<input type="text" id="updateRecipeType" name="type" required>
+
+				<label for="ingredients">Ingredients:</label>
+				<!-- textbox -->
+				<!-- Warn the user that ingredients must be on the following format and separated by a comma : -->
+				<!-- name - type - quantity -->
+				<span>Ingredients must be on the following format and separated by a comma :</span>
+				<span>name - type - quantity</span>
+				<input type="text" id="updateRecipeIngredients" name="ingredients" required>
+				<button type="button" onclick="updateRecipe()">Update Recipe</button>
+			</form>
+			<form id="deleteRecipe">
+				<label for="ID">Recipe ID:</label>
+				<input type="text" id="deleteRecipeID" name="ID" required>
+				<button type="button" onclick="deleteRecipe()">Delete Recipe</button>
+			</form>
+		</div>	
+
+		<div id="ingredients" class="section">
+			<button type="button" onclick="listIngredients()">List Ingredients</button>
+			<form id="ingredientsID">
+				<label for="ID">Ingredient ID:</label>
+				<input type="text" id="getIngredientID" name="ID" required>
+				<button type="button" onclick="ingredientID()">Ingredient by ID</button>
+			</form>
+
+			<form id="ingredientsOfRecipeID">
+				<label for="ID">Recipe ID:</label>
+				<input type="text" id="getIngredientsOfRecipeID" name="ID" required>
+				<button type="button" onclick="ingredientsOfRecipe()">Ingredients of Recipe</button>
+			</form>
+
+			<form id="addIngredient">
+				<label for="name">Name:</label>
+				<input type="text" id="addIngredientName" name="name" required>
+
+				<label for="type">Type:</label>
+				<input type="text" id="addIngredientType" name="type" required>
+
+				<button type="button" onclick="addIngredient()">Add Ingredient</button>
+			</form>
+
+			<form id="updateIngredient">
+				<label for="ID">Ingredient ID:</label>
+				<input type="text" id="updateIngredientID" name="ID" required>
+				<!-- others params -->
+				<label for="name">Name:</label>
+				<input type="text" id="updateIngredientName" name="name" required>
+
+				<label for="type">Type:</label>
+				<input type="text" id="updateIngredientType" name="type" required>
+
+				<button type="button" onclick="updateIngredient()">Update Ingredient</button>
+			</form>
+
+			<form id="deleteIngredient">
+				<label for="ID">Ingredient ID:</label>
+				<input type="text" id="deleteIngredientID" name="ID" required>
+				<button type="button" onclick="deleteIngredient()">Delete Ingredient</button>
+			</form>
+
+		</div>
+
+
+
+		<div id="response"></div>
+
+		<script>
+			const isExpired = () => {
+				const accessToken = localStorage.getItem('accessToken');
+				const decodedToken = decodeToken(accessToken);
+				const currentTime = Math.floor(Date.now() / 1000);
+
+				return decodedToken.exp < currentTime;
+			};
+
+			const decodeToken = (token) => {
+				const base64Url = token.split('.')[1];
+				const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+				const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+					return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+				}).join(''));
+
+				return JSON.parse(jsonPayload);
+			};
+
+			async function refreshToken() {
+				const refreshToken = localStorage.getItem('refreshToken');
+
+				await fetch('/refresh', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ refreshToken }),
+				})
+				.then(response => response.json())
+				.then(data => {
+					const { accessToken } = data;
+
+					// Update the access token in localStorage
+					localStorage.setItem('accessToken', accessToken);
+				})
+				.catch(error => console.error('Error:', error));
+			};
+
+			async function checkAccessToken() {
+				const accessToken = localStorage.getItem('accessToken');
+				// If token exists, check if it's expired
+				if (accessToken) {
+						console.log('Access token exists');
+						console.log(isExpired());
+					if (isExpired()) {
+						console.log('Access token is expired');
+						// If expired, get a new token
+						await refreshToken();
+					} 
 				}
-			})
-			.then(response => response.json())
-			.then(data => console.log(data))
-			.catch(error => console.error('Error:', error))		
-	};
 
-	async function listUsers() {
-		let accessToken = localStorage.getItem('accessToken');
+				// After getting a new token, make the API call and get sure that the token has been updated
+				if (accessToken === localStorage.getItem('accessToken')) {
+					console.log('Access token has not been updated');
+				} else {
+					console.log('Access token has been updated');
+				}
+			};	
+
+			const login = () => {
+				const username = document.getElementById('loginUsername').value;
+				const password = document.getElementById('loginPassword').value;
+
+				// check if user is already logged in
+				if (localStorage.getItem('accessToken') || localStorage.getItem('refreshToken')) {
+					console.log('User is already logged in');
+					return;
+				}
+
+				fetch('/login', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ username, password }),
+				})
+				.then(response => response.json())
+				.then(data => {
+					const { accessToken, refreshToken } = data;
+
+					// Store tokens in localStorage or session storage
+					localStorage.setItem('accessToken', accessToken);
+					localStorage.setItem('refreshToken', refreshToken);
+
+					console.log(data.message);
+				})
+				.catch(error => console.error('Error:', error));
+			};
+
+			const logout = () => {
+				const refreshToken = localStorage.getItem('refreshToken');
+
+				localStorage.removeItem('accessToken');
+				localStorage.removeItem('refreshToken');
+				
+				fetch('/logout', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ refreshToken }),
+				})		
+				.then(response => response.json())
+				.then(data => {
+					console.log(data.message);
+				})
+				.catch(error => console.error('Error:', error));
+			};
+
+			async function protectedResource() {
+				await checkAccessToken();
+
+				fetch('protected', {
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+					}
+				})
+				.then(response => response.json())
+				.then(data => console.log(data))
+				.catch(error => console.error('Error:', error))		
+			};
+
+			async function listUsers() {
+				await checkAccessToken();
+
+				fetch('/users',
+				{
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+					}
+				})
+				.then(response => response.json())
+				.then(data => console.log(data))
+				.catch(error => console.error('Error:', error));
+			};
+
+			async function usersMe() {
+				await checkAccessToken();
+
+				fetch('/users/me',
+				{
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+					}
+				})
+				.then(response => response.json())
+				.then(data => console.log(data))
+				.catch(error => console.error('Error:', error));
+			};
+
+			async function usersID() {
+				await checkAccessToken();
+
+				// Get the user ID from input 
+				let id = document.getElementById('getUserID').value;
+				console.log(id);
+
+				fetch('/users/' + id,
+				{
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+					}
+				})
+				.then(response => response.json())
+				.then(data => console.log(data))
+				.catch(error => console.error('Error:', error));
+			};
 			
-			// If token exists, check if it's expired
-			if (accessToken) {
-				console.log('Access token exists');
-				console.log(isExpired());
-				if (isExpired()) {
-					// If expired, get a new token
-					await refreshToken();
-				} 
+			async function updateUser() {
+				await checkAccessToken();
+
+				// Get the user ID from input 
+				let id = document.getElementById('updateUserID').value;
+				// Get the user data from input 
+				let username = document.getElementById('updateUserUsername').value;
+				let password = document.getElementById('updateUserPassword').value;
+				// get all selected options from the select box
+				let roles = [...document.getElementById('updateUserRoles').options].filter(option => option.selected).map(option => option.value);
+				console.log(id);
+				console.log(username);
+				console.log(password);
+				console.log(roles);
+
+				fetch('/users/' + id,
+				{
+					method: 'PATCH',
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ username, password, roles })
+				})
+				.then(response => response.json())
+				.then(data => console.log(data))
+				.catch(error => console.error('Error:', error));
 			}
 
-			// After getting a new token, make the API call and get sure that the token has been updated
-			if (accessToken === localStorage.getItem('accessToken')) {
-				console.log('Access token has not been updated');
-				console.log('Access token: ', accessToken);
-				console.log('Access token: ', localStorage.getItem('accessToken'));
-			} else {
-				console.log('Access token has been updated');
+			async function addUser() {
+				await checkAccessToken();
+
+				// Get the user data from input 
+				let username = document.getElementById('addUserUsername').value;
+				let password = document.getElementById('addUserPassword').value;
+				// get all selected options from the select box
+				let roles = [...document.getElementById('addUserRoles').options].filter(option => option.selected).map(option => option.value);
+				console.log(username);
+				console.log(password);
+				console.log(roles);
+
+				fetch('/users/add',
+				{
+					method: 'POST',
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ username, password, roles })
+				})
+				.then(response => response.json())
+				.then(data => console.log(data))
+				.catch(error => console.error('Error:', error));
+			};
+
+			async function deleteUser() {
+				await checkAccessToken();
+
+				// Get the user ID from input 
+				let id = document.getElementById('deleteUserID').value;
+				console.log(id);
+
+				fetch('/users/' + id,
+				{
+					method: 'DELETE',
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+					}
+				})
+				.then(response => response.text())
+				.then(data => console.log(data))
+				.catch(error => console.error('Error:', error));
+			};
+		
+			async function listRecipes() {
+				await checkAccessToken();
+
+				fetch('/recipes', {
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+					}
+				})
+				.then(response => response.json())
+				.then(data => 
+					{
+						console.log(data);
+						document.getElementById('response').innerHTML = JSON.stringify(data);
+					})
+				.catch(error => console.error('Error:', error));    
 			}
 
-		fetch('/users',
-		{
-			headers: {
-				'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
-			}
-		})
-		.then(response => response.json())
-		.then(data => console.log(data))
-		.catch(error => console.error('Error:', error));
-		// window.location.href = '/users';
-		// Redirect to /users
-	};
+			async function recipeID() {
+				await checkAccessToken();
 
-	async function usersMe() {
-		let accessToken = localStorage.getItem('accessToken');
-			
-			// If token exists, check if it's expired
-			if (accessToken) {
-				console.log('Access token exists');
-				console.log(isExpired());
-				if (isExpired()) {
-					// If expired, get a new token
-					await refreshToken();
-				} 
+				// Get the recipe ID from input 
+				let id = document.getElementById('getRecipeID').value;
+				console.log(id);
+
+				fetch('/recipes/' + id,
+				{
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+					}
+				})
+				.then(response => response.json())
+				.then(data => 
+					{
+						console.log(data);
+						document.getElementById('response').innerHTML = JSON.stringify(data);
+					})
+				.catch(error => console.error('Error:', error));
 			}
 
-			// After getting a new token, make the API call and get sure that the token has been updated
-			if (accessToken === localStorage.getItem('accessToken')) {
-				console.log('Access token has not been updated');
-				console.log('Access token: ', accessToken);
-				console.log('Access token: ', localStorage.getItem('accessToken'));
-			} else {
-				console.log('Access token has been updated');
+			async function addRecipe() {
+				await checkAccessToken();
+
+				// Get the recipe data from input 
+				let name = document.getElementById('addRecipeName').value;
+				let type = document.getElementById('addRecipeType').value;
+				let ingredientsString = document.getElementById('addRecipeIngredients').value;
+				console.log(name);
+				console.log(type);
+				// ingredients should be an array of objects ; parse the string to get the array
+				let ingredients = ingredientsString.split(',').map(ingredient => {
+					let ingredientArray = ingredient.split('-').map(item => item.trim());
+					return { name: ingredientArray[0], type: ingredientArray[1], quantity: ingredientArray[2] };
+				});
+				console.log(ingredients);
+				
+				fetch('/recipes/add',
+				{
+					method: 'POST',
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ name, type, ingredients })
+				})
+				.then(response => response.json())
+				.then(data => console.log(data))
+				.catch(error => console.error('Error:', error));
+			};
+
+			async function updateRecipe() {
+				await checkAccessToken();
+
+				// Get the recipe ID from input 
+				let id = document.getElementById('updateRecipeID').value;
+				// Get the recipe data from input 
+				let name = document.getElementById('updateRecipeName').value;
+				let type = document.getElementById('updateRecipeType').value;
+				let ingredientsString = document.getElementById('updateRecipeIngredients').value;
+				console.log(id);
+				console.log(name);
+				console.log(type);
+				// ingredients should be an array of objects ; parse the string to get the array
+				let ingredients = ingredientsString.split(',').map(ingredient => {
+					let ingredientArray = ingredient.split('-').map(item => item.trim());
+					return { name: ingredientArray[0], type: ingredientArray[1], quantity: ingredientArray[2] };
+				});
+				console.log(ingredients);
+				
+				fetch('/recipes/' + id,
+				{
+					method: 'PATCH',
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ name, type, ingredients })
+				})
+				.then(response => response.json())
+				.then(data => console.log(data))
+				.catch(error => console.error('Error:', error));
+			};
+
+			async function deleteRecipe() {
+				await checkAccessToken();
+
+				// Get the recipe ID from input 
+				let id = document.getElementById('deleteRecipeID').value;
+				console.log(id);
+
+				fetch('/recipes/' + id,
+				{
+					method: 'DELETE',
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+					}
+				})
+				.then(response => response.text())
+				.then(data => console.log(data))
+				.catch(error => console.error('Error:', error));
+			};
+
+			async function listIngredients() {
+				let accessToken = localStorage.getItem('accessToken');
+				
+				await checkAccessToken(accessToken);
+
+				fetch('/ingredients', {
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+					}
+				})
+				.then(response => response.json())
+				.then(data => 
+					{
+						console.log(data);
+						document.getElementById('response').innerHTML = JSON.stringify(data);
+					})
+				.catch(error => console.error('Error:', error));    
 			}
+		
+			async function ingredientID() {
+				await checkAccessToken();
 
-		fetch('/users/me',
-		{
-			headers: {
-				'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+				// Get the ingredient ID from input 
+				let id = document.getElementById('getIngredientID').value;
+				console.log(id);
+
+				fetch('/ingredients/' + id,
+				{
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+					}
+				})
+				.then(response => response.json())
+				.then(data => 
+					{
+						console.log(data);
+						document.getElementById('response').innerHTML = JSON.stringify(data);
+					})
+				.catch(error => console.error('Error:', error));
 			}
-		})
-		.then(response => response.json())
-		.then(data => console.log(data))
-		.catch(error => console.error('Error:', error));
-		// window.location.href = '/myProfile';
-		// Redirect to /users
-	};
+		
+			async function ingredientsOfRecipe() {
+				await checkAccessToken();
 
-	const isExpired = () => {
-		const accessToken = localStorage.getItem('accessToken');
-		const decodedToken = decodeToken(accessToken);
-		const currentTime = Math.floor(Date.now() / 1000);
+				// Get the recipe ID from input 
+				let id = document.getElementById('getIngredientsOfRecipeID').value;
+				console.log(id);
 
-		return decodedToken.exp < currentTime;
-	};
+				fetch('/recipes/' + id + '/ingredients',
+				{
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+					}
+				})
+				.then(response => response.json())
+				.then(data => 
+					{
+						console.log(data);
+						document.getElementById('response').innerHTML = JSON.stringify(data);
+					})
+				.catch(error => console.error('Error:', error));
+			}
+		
+			async function addIngredient() {
+				await checkAccessToken();
 
-	const decodeToken = (token) => {
-		const base64Url = token.split('.')[1];
-		const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-		const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
-			return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-		}).join(''));
+				// Get the ingredient data from input 
+				let name = document.getElementById('addIngredientName').value;
+				let type = document.getElementById('addIngredientType').value;
+				console.log(name);
+				console.log(type);
+				
+				fetch('/ingredients/add',
+				{
+					method: 'POST',
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ name, type })
+				})
+				.then(response => response.json())
+				.then(data => console.log(data))
+				.catch(error => console.error('Error:', error));
+			};
 
-		return JSON.parse(jsonPayload);
-	};
+			async function updateIngredient() {
+				await checkAccessToken();
 
-	async function refreshToken() {
-		const refreshToken = localStorage.getItem('refreshToken');
+				// Get the ingredient ID from input 
+				let id = document.getElementById('updateIngredientID').value;
+				// Get the ingredient data from input 
+				let name = document.getElementById('updateIngredientName').value;
+				let type = document.getElementById('updateIngredientType').value;
+				console.log(id);
+				console.log(name);
+				console.log(type);
+				
+				fetch('/ingredients/' + id,
+				{
+					method: 'PATCH',
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ name, type })
+				})
+				.then(response => response.json())
+				.then(data => console.log(data))
+				.catch(error => console.error('Error:', error));
+			};
 
-		await fetch('/refresh', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ refreshToken }),
-		})
-		.then(response => response.json())
-		.then(data => {
-			const { accessToken } = data;
+			async function deleteIngredient() {
+				await checkAccessToken();
 
-			// Update the access token in localStorage
-			localStorage.setItem('accessToken', accessToken);
-		})
-		.catch(error => console.error('Error:', error));
-	};
+				// Get the ingredient ID from input 
+				let id = document.getElementById('deleteIngredientID').value;
+				console.log(id);
 
-  </script>
-  
-</body>
+				fetch('/ingredients/' + id,
+				{
+					method: 'DELETE',
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+					}
+				})
+				.then(response => response.text())
+				.then(data => console.log(data))
+				.catch(error => console.error('Error:', error));
+			};
+		</script>
+	</body>
 </html>

@@ -1,4 +1,4 @@
-[![en](https://img.shields.io/badge/lang-en-green.svg)](https://etulab.univ-amu.fr/h21228183/connect-4/-/blob/main/README.md)
+[![en](https://img.shields.io/badge/lang-en-green.svg)](./README.md)
 
 # FoodAPI
 ## Table des matières
@@ -16,7 +16,7 @@ Ce projet est un projet scolaire pour le cours de qualité de développement à 
 Son but est d'écrire une API REST en Javascript en utilisant NodeJS et Express.
 
 ## Description
-TBA
+Voir [![en](https://img.shields.io/badge/lang-en-green.svg)](h./README.md)
 
 ## Installation
 Cloner le dépôt et installer les dépendances avec la commande `npm install`.

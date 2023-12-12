@@ -30,7 +30,6 @@ export default class UserRepository {
       // If the old user had a role that the new user doesn't have, remove it from the database.
       // If the user has the same roles as before, do nothing.
       const oldUserRoles = await this.userRoleDAO.findByIdUser(user.getId());
-      console.log(oldUserRoles);
 
       for (const oldUserRole of oldUserRoles) {
         if (!user.getRoles().includes(oldUserRole.id_role)) {

@@ -44,7 +44,6 @@ export default class IngredientDAO {
       driver: sqlite3.Database
     })
     const ingredient = await db.get(`SELECT * FROM Ingredient WHERE id_ingredient = ?`, [id]);
-    console.log(ingredient);
     return new Ingredient(ingredient.id_ingredient, ingredient.name, ingredient.type);
   }
 }

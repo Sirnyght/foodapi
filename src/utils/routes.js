@@ -44,7 +44,6 @@ export async function authenticatedUserRoute(req, res) {
 
     const userRepository = new UserRepository();
     const user = await userRepository.findById(decodedAccessToken.id);
-    console.log(user);
 
     res.json(user);
   } catch (error) {
@@ -64,12 +63,10 @@ export async function userIDRoute(req, res) {
 
 export async function addUserRoute(req, res) {
   try {
-    // console.log(req.body.roles);
     const userRepository = new UserRepository();
     const roleRepository = new RoleRepository();
     // Fetch roles ids from database
     const roles = await roleRepository.findByNames(req.body.roles);
-    console.log(roles);
     // Create user object
     const user = new User();
     user.setUsername(req.body.username);
@@ -103,7 +100,6 @@ export async function updateUserRoute(req, res) {
 
 export async function deleteUserRoute(req, res) {
   try {
-    console.log(req.params.id);
     const userRepository = new UserRepository();
     const user = new User();
     user.setId(req.params.id);
@@ -151,7 +147,6 @@ export async function addRecipeRoute(req, res) {
       ingredients.push(ingredientObject);
     }
     recipe.setIngredients(ingredients);
-    console.log(recipe);
     await recipeRepository.insert(recipe);
     res.json(recipe);
   } catch (error) {

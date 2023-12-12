@@ -45,7 +45,6 @@ export default class RecipeRepository {
     // If the old recipe had an ingredient that the new recipe doesn't have, remove it from the database.
     // If the recipe has the same ingredients as before, do nothing.
     const oldRecipeIngredients = await this.recipeIngredientDAO.findByRecipe(recipe.getId());
-    console.log(oldRecipeIngredients);
 
     for (const oldRecipeIngredient of oldRecipeIngredients) {
       if (!recipe.getIngredients().includes(oldRecipeIngredient.id_ingredient)) {

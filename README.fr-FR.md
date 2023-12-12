@@ -5,6 +5,7 @@
 * [Infos générales](#infos-générales)
 * [Description](#description)
 * [Installation](#installation)
+* [Tâches](#tâches)
 * [Support](#support)
 * [Contribution](#contribution)
 * [Auteurs et remerciements](#authors-and-acknowledgment)
@@ -19,7 +20,11 @@ TBA
 
 ## Installation
 Cloner le dépôt et installer les dépendances avec la commande `npm install`.
+Initialiser la base de données avec la commande `npm run setup`.
 Puis lancer le projet avec la commande `npm start`.
+
+## Tâches
+[Tâches](./work.md)
 
 ## Support
 Soulevez une issue sur le dépôt si il y a un problème. Je tenterai de répondre au plus vite.

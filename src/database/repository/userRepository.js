@@ -84,16 +84,20 @@ export default class UserRepository {
   }
 
   async findByUsername(username) {
-    const user = await this.userDAO.findByUsername(username);
+    const users = await this.userDAO.findAll();
 
-    const userRoles = await this.userRoleDAO.findByIdUser(user.getId());
-    const roles = [];
-    for (const userRole of userRoles) {
-      const role = await this.roleDAO.findById(userRole.id_role);
-      roles.push(role);
+    for (const user of users) {
+      if (user.getUsername() === username) {
+        const userRoles = await this.userRoleDAO.findByIdUser(user.getId());
+        const roles = [];
+        for (const userRole of userRoles) {
+          const role = await this.roleDAO.findById(userRole.id_role);
+          roles.push(role);
+        }
+        user.setRoles(roles);
+        return user;
+      }
     }
-    user.setRoles(roles);
-    return user;
   }
 
   async findByUsernameAndPassword(username, password) {
@@ -110,26 +114,5 @@ export default class UserRepository {
         return user;
       }
     }
-  }
-
-  async findByRole(id_role) {
-    const userRoles = await this.userRoleDAO.findByIdRole(id_role);
-    const users = [];
-    for (const userRole of userRoles) {
-      const user = await this.userDAO.findById(userRole.id_user);
-      users.push(user);
-    }
-    return users;
-  }
-
-  async findByRoleName(name) {
-    const role = await this.roleDAO.findByName(name);
-    const userRoles = await this.userRoleDAO.findByIdRole(role.getId());
-    const users = [];
-    for (const userRole of userRoles) {
-      const user = await this.userDAO.findById(userRole.id_user);
-      users.push(user);
-    }
-    return users;
   }
 }

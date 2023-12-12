@@ -7,7 +7,7 @@
   "scripts": {
     "setup": "node src/database/setup.js",
     "start": "nodemon index",
-    "test": "mocha --require @babel/polyfill --require @babel/register",
+    "test": "npm run setup | mocha --require @babel/polyfill --require @babel/register",
     "test:watch": "npm run test -- --parallel --watch"
   },
   "repository": {

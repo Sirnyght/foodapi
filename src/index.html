@@ -5,17 +5,19 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Login Page</title>
 		<style>
-			/* body {
+			body {
 				font-family: Arial, sans-serif;
 				display: flex;
-				align-items: center;
+				align-items: flex-start;
 				justify-content: center;
-				flex-direction: column;
-				height: 100vh;
-				margin: 0;
+			}
+			.section {
+				border: 1px solid #ccc;
+				border-radius: 5px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 			}
 			form {
-				width: 300px;
+				width: 290px;
 				padding: 20px;
 				border: 1px solid #ccc;
 				border-radius: 5px;
@@ -35,80 +37,87 @@
 				background-color: #4CAF50;
 				color: white;
 				padding: 10px 15px;
+				margin: 8px 0;
 				border: none;
 				border-radius: 4px;
 				cursor: pointer;
 			}
 			button:hover {
 				background-color: #45a049;
-			} */
+			}
 		</style>
 	</head>
 	<body>
-		<form id="loginForm">
-			<label for="username">Username:</label>
-			<input type="text" id="loginUsername" name="username" required>
+		<div id="loginProfile" class="section">
+			<span>LOGIN / USER PROFILE</span>
+			<span>A noter que ce fichier html fait guise de test d'intégartion de l'API.</span>
+			<form id="loginForm">
+				<label for="username">Username:</label>
+				<input type="text" id="loginUsername" name="username" required>
 
-			<label for="password">Password:</label>
-			<input type="password" id="loginPassword" name="password" required>
+				<label for="password">Password:</label>
+				<input type="password" id="loginPassword" name="password" required>
 
-			<button type="button" onclick="login()">Login</button>
-			<button type="button" onclick="protectedResource()">Get Protected Resource (Test)</button>
-			<button type="button" onclick="logout()">Logout</button>
-		</form>
+				<button type="button" onclick="login()">Login</button>
+				<button type="button" onclick="protectedResource()">Get Protected Resource (Test)</button>
+				<button type="button" onclick="logout()">Logout</button>
+			</form>
+			
+			<button type="button" onclick="listUsers()">List Users</button>
+			<button type="button" onclick="usersMe()">My Profile</button>
+		</div>
+		<div id="users" class="section">
+			<span>USERS ACTION (gestion des utilisateurs)</span>
+			<form id="usersID">
+				<label for="ID">User ID:</label>
+				<input type="text" id="getUserID" name="ID" required>
+				<button type="button" onclick="usersID()">User Profile by ID</button>
+			</form>
 
-		<button type="button" onclick="listUsers()">List Users</button>
-		<button type="button" onclick="usersMe()">My Profile</button>
-		
-		<form id="usersID">
-			<label for="ID">User ID:</label>
-			<input type="text" id="getUserID" name="ID" required>
-			<button type="button" onclick="usersID()">User Profile by ID</button>
-		</form>
+			<form id="addUser">
+				<label for="username">Username:</label>
+				<input type="text" id="addUserUsername" name="username" required>
 
-		<form id="addUser">
-			<label for="username">Username:</label>
-			<input type="text" id="addUserUsername" name="username" required>
+				<label for="password">Password:</label>
+				<input type="password" id="addUserPassword" name="password" required>
 
-			<label for="password">Password:</label>
-			<input type="password" id="addUserPassword" name="password" required>
+				<!-- Roles should allow selection of multiple roles (admin, user) -->
+				<label for="roles">Roles:</label>
+				<select id="addUserRoles" name="roles" multiple required>
+					<option value="admin">Admin</option>
+					<option value="user">User</option>
+				</select>
 
-			<!-- Roles should allow selection of multiple roles (admin, user) -->
-			<label for="roles">Roles:</label>
-			<select id="addUserRoles" name="roles" multiple required>
-				<option value="admin">Admin</option>
-				<option value="user">User</option>
-			</select>
+				<button type="button" onclick="addUser()">Add User</button>
+			</form>
 
-			<button type="button" onclick="addUser()">Add User</button>
-		</form>
+			<form id="updateUser">
+				<label for="ID">User ID:</label>
+				<input type="text" id="updateUserID" name="ID" required>
+				<!-- others params -->
+				<label for="username">Username:</label>
+				<input type="text" id="updateUserUsername" name="username" required>
 
-		<form id="updateUser">
-			<label for="ID">User ID:</label>
-			<input type="text" id="updateUserID" name="ID" required>
-			<!-- others params -->
-			<label for="username">Username:</label>
-			<input type="text" id="updateUserUsername" name="username" required>
+				<label for="password">Password:</label>
+				<input type="password" id="updateUserPassword" name="password" required>
 
-			<label for="password">Password:</label>
-			<input type="password" id="updateUserPassword" name="password" required>
+				<!-- Roles should allow selection of multiple roles (admin, user) -->
+				<label for="roles">Roles:</label>
+				<select id="updateUserRoles" name="roles" multiple required>
+					<option value="admin">Admin</option>
+					<option value="user">User</option>
+				</select>
+				<button type="button" onclick="updateUser()">Update User</button>
+			</form>
 
-			<!-- Roles should allow selection of multiple roles (admin, user) -->
-			<label for="roles">Roles:</label>
-			<select id="updateUserRoles" name="roles" multiple required>
-				<option value="admin">Admin</option>
-				<option value="user">User</option>
-			</select>
-			<button type="button" onclick="updateUser()">Update User</button>
-		</form>
-
-		<form id="deleteUser">
-			<label for="ID">User ID:</label>
-			<input type="text" id="deleteUserID" name="ID" required>
-			<button type="button" onclick="deleteUser()">Delete User</button>
-		</form>
-
+			<form id="deleteUser">
+				<label for="ID">User ID:</label>
+				<input type="text" id="deleteUserID" name="ID" required>
+				<button type="button" onclick="deleteUser()">Delete User</button>
+			</form>
+		</div>
 		<div id="recipes" class="section">
+			<span>RECIPES ACTION (gestion des recettes)</span>
 			<button type="button" onclick="listRecipes()">List Recipes</button>
 			<form id="recipesID">
 				<label for="ID">Recipe ID:</label>
@@ -161,6 +170,7 @@
 		</div>	
 
 		<div id="ingredients" class="section">
+			<span>INGREDIENTS ACTION (gestion des ingrédients)</span>
 			<button type="button" onclick="listIngredients()">List Ingredients</button>
 			<form id="ingredientsID">
 				<label for="ID">Ingredient ID:</label>

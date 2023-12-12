@@ -12,7 +12,7 @@ Quelque soit votre projet, celui-ci devra respecter les contraintes suivantes :
 - ✔️ Persistance : La manipulation des données de la base de données doit se faire par le biais de l'utilisation de DAO.
 - ✔️ Contrôle d'accès : Vos opérations d'authentification doivent reposer sur l'utilisation du standard RFC 7519 (JWT).
 - ✔️ Tests unitaires : L'ensemble des opérations sur la base de données devra faire l'objet de tests unitaires (Mocha, Jest, etc.). Attention, ici ce que vous testez c'est votre API de persistance. La manipulation de la base de données est déjà testée en principe par la bibliothèque que vous utilisez (ex : node-sqlite3 et node-sqlite).
-- ❌ Documentation : Votre projet devra posséder un fichier README.md présentant l'ensemble des informations nécessaires tels que sa configuration, son déploiement, ou encore son utilisation. Pensez entre autre à décrire précisément l'ensemble des Endpoints et leur usage..
+- ✔️ Documentation : Votre projet devra posséder un fichier README.md présentant l'ensemble des informations nécessaires tels que sa configuration, son déploiement, ou encore son utilisation. Pensez entre autre à décrire précisément l'ensemble des Endpoints et leur usage..
 
 ## Extensions
 En plus des éléments obligatoires demandés en TP, et rappelés ci-dessus, vous devrez choisir deux améliorations à mettre en oeuvre dans votre projet parmi la liste ci-dessous.

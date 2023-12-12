@@ -1,12 +1,13 @@
 import sqlite3 from 'sqlite3'
 import { open } from 'sqlite'
+import { generateHash } from '../../utils/security.js';
 export default class RefreshTokenDAO {
 	async insert(refreshToken) {
 		const db = await open({
 				filename: 'database.db',
 				driver: sqlite3.Database
 		})
-		await db.run(`INSERT INTO RefreshToken (id_user, token) VALUES (?, ?)`, [refreshToken.getUserId(), refreshToken.getToken()]);
+		await db.run(`INSERT INTO RefreshToken (id_user, token) VALUES (?, ?)`, [refreshToken.getUserId(), await generateHash(refreshToken.getToken())]);
 	}
 	
 	async update(refreshToken) {
@@ -14,7 +15,7 @@ export default class RefreshTokenDAO {
 			filename: 'database.db',
 			driver: sqlite3.Database
 		})
-		await db.run(`UPDATE RefreshToken SET token = ? WHERE id_user = ?`, [refreshToken.getToken(), refreshToken.getUserId()]);
+		await db.run(`UPDATE RefreshToken SET token = ? WHERE id_user = ?`, [await generateHash(refreshToken.getToken()), refreshToken.getUserId()]);
 	}
 	
 	async delete(refreshToken) {

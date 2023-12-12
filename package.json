@@ -26,6 +26,7 @@
   "author": "Dimitri",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "jsonwebtoken": "^9.0.2",
     "sqlite": "^5.0.1",
     "sqlite3": "^5.1.6",

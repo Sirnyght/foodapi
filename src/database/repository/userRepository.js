@@ -1,6 +1,7 @@
 import UserDAO from "../DAOs/userDAO.js";
 import RoleDAO from "../DAOs/roleDAO.js";
 import UserRoleDAO from "../DAOs/userRoleDAO.js";
+import { comparePasswordWithHash } from "../../utils/security.js";
 // import RefreshTokenDAO from "../DAOs/refreshTokenDAO.js";
 
 export default class UserRepository {
@@ -101,8 +102,9 @@ export default class UserRepository {
 
   async findByUsernameAndPassword(username, password) {
     const users = await this.userDAO.findAll();
+
     for (const user of users) {
-      if (user.getUsername() === username && user.getPassword() === password) {
+      if (user.getUsername() === username && comparePasswordWithHash(password, user.getPassword())) {
         const userRoles = await this.userRoleDAO.findByIdUser(user.getId());
         const roles = [];
         for (const userRole of userRoles) {

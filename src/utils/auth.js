@@ -6,6 +6,7 @@ import UserRepository from '../database/repository/userRepository.js';
 import RefreshTokenDAO from '../database/DAOs/refreshTokenDAO.js';
 import RefreshToken from '../models/refreshToken.js';
 import { JWT_SECRET, JWT_EXPIRATION, REFRESH_TOKEN_SECRET, REFRESH_TOKEN_EXPIRATION, roleRequirements } from '../config/config.js';
+import { compareTokenWithHash } from './security.js';
 
 const generateAccessToken = (user) => {
   return jwt.sign({ id: user.id, username: user.username, roles: user.roles }, JWT_SECRET, { expiresIn: JWT_EXPIRATION });
@@ -19,15 +20,12 @@ const generateRefreshToken = (user) => {
 const checkUserRole = (method, url, userRoles) => {
   // Define your method and route-specific role requirements in config.js
   // If nothing is specified for a route, it is accessible by everyone
-  console.log(method, url);
   // If the URL ends with a number, it is a route to get a specific resource
   // So we replace the number with ':id' to match the route in config.js
   if (url.match(/\d+$/)) url = url.replace(/\d+$/, ':id');
-  console.log(roleRequirements);
 
   const requiredRoles = roleRequirements[`${method}:${url}`];
   // If there are no role requirements for a route, it is accessible by everyone
-  console.log(requiredRoles);
   if (!requiredRoles) return true;
   // If there are role requirements for a route, check if the user has the required roles
   // If the user has at least one of the required roles, he can access the route
@@ -66,7 +64,7 @@ export async function refreshToken(req, res) {
   const refreshTokens = await refreshTokenDAO.findAll();
 
   for (const refreshTokenObject of refreshTokens) {
-    if (refreshTokenObject.token === refreshToken) {
+    if (compareTokenWithHash(refreshToken, refreshTokenObject.token)) {
       jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
         if (err) 
           return res.status(403).json({ message: 'Forbidden' });

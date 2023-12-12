@@ -1,5 +1,6 @@
 import sqlite3 from 'sqlite3'
 import { open } from 'sqlite'
+import { generateHash } from '../utils/security.js'
 
 // Create database.db and associated tables if they don't exist
 // Also, insert some data in the tables
@@ -116,11 +117,11 @@ const db = await open({
 			);
 	`)
 	
-	db.exec(`INSERT OR IGNORE INTO User (username, password) VALUES ('admin', 'admin'); `)
+	db.exec(`INSERT OR IGNORE INTO User (username, password) VALUES ('admin', '${await generateHash('admin')}'); `)
 	db.exec(`INSERT OR IGNORE INTO Role (name) VALUES ('admin'); `)
 	db.exec(`INSERT OR IGNORE INTO UserRole (id_user, id_role) VALUES (1, 1); `)
 
-	db.exec(`INSERT OR IGNORE INTO User (username, password) VALUES ('user', 'user'); `)
+	db.exec(`INSERT OR IGNORE INTO User (username, password) VALUES ('user', '${await generateHash('user')}'); `)
 	db.exec(`INSERT OR IGNORE INTO Role (name) VALUES ('user'); `)
 	db.exec(`INSERT OR IGNORE INTO UserRole (id_user, id_role) VALUES (2, 2); `)
 }

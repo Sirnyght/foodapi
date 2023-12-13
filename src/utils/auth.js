@@ -64,10 +64,6 @@ export async function refreshToken(req, res) {
   const refreshTokens = await refreshTokenDAO.findAll();
 
   for (const refreshTokenObject of refreshTokens) {
-    // console.log('AAAAAAAAAAAA');
-    // console.log(refreshTokenObject.token);
-    // console.log(refreshToken);
-    // console.log(compareTokenWithHash(refreshToken, refreshTokenObject.token));
     if (await compareTokenWithHash(refreshToken, refreshTokenObject.token)) {
       jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
         if (err) 
